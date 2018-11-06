@@ -1,0 +1,19 @@
+SHOW DATABASES;
+DROP DATABASE IF EXISTS jboone6assign2db;
+CREATE DATABASE jboone6assign2db;
+USE jboone6assign2db;
+
+GRANT USAGE ON *.* TO 'ta'@'localhost';
+DROP USER 'ta'@'localhost';
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319';
+GRANT ALL PRIVILEGES ON yourwesternuseridassign2db.* TO 'ta'@'localhost';
+FLUSH PRIVILEGES;
+
+SHOW TABLES;
+
+CREATE TABLE product (prodID CHAR(2) NOT NULL,  proddesc VARCHAR(20) NOT NULL, prodcost FLOAT NOT NULL, prodquant INT NOT NULL, PRIMARY KEY(prodID));
+CREATE TABLE agent (agentID CHAR(2) NOT NULL, agentfn VARCHAR(30) NOT NULL, agentln VARCHAR(30) NOT NULL, agentcity VARCHAR(15) NOT NULL, agentcomm INT NOT NULL, PRIMARY KEY(agentID));
+CREATE TABLE customer (custID CHAR(2) NOT NULL, custfn VARCHAR(30) NOT NULL, custln VARCHAR(30) NOT NULL, custcity VARCHAR(15) NOT NULL, custpn VARCHAR(20) NOT NULL, custagentID CHAR(2) NOT NULL, PRIMARY KEY(custID), FOREIGN KEY (custagentID) REFERENCES agent(agentID));
+CREATE TABLE purchases (purchcustID CHAR(2) NOT NULL, purchprodID CHAR(2) NOT NULL, purchquant INT NOT NULL, PRIMARY KEY(purchcustID,purchprodID), FOREIGN KEY(purchcustID) REFERENCES customer(custID), FOREIGN KEY(purchprodID) REFERENCES product(prodID));
+
+SHOW TABLES;
