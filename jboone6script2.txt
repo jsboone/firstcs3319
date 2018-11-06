@@ -1,0 +1,54 @@
+USE jboone6assign2db;
+
+LOAD DATA LOCAL INFILE "loaddatafall2018.txt" 
+INTO TABLE product
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+SELECT * FROM product; 
+
+INSERT INTO product (prodID, proddesc, prodcost, prodquant) VALUES (66,'Elbow pads',14.25,120);
+INSERT INTO product (prodID, proddesc, prodcost, prodquant) VALUES (18,'Bike Lock',20,200);
+
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (99, 'Hugh', 'Grant', 'Springfield',16);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (22,'Courtney','Cox','New York',25);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (66, 'Rosie', 'ODonnell', 'Ottawa',100);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (33, 'David', 'Letterman', 'Bedrock',100);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (11, 'Regis', 'Philbin', 'Boston',33);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (12, 'Rosie', 'Cox', 'Ottawa',50);
+INSERT INTO agent (agentID, agentfn, agentln, agentcity, agentcomm) VALUES (98, 'Jodi', 'Boone', 'Toronto',99);
+
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (21, 'Homer', 'Simpson', 'Springfield', '686-8956',99);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (31, 'Sideshow', 'Bob', 'Springfield', '686-5555',66);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (12, 'Monty', 'Burns', 'Springfield', '789-0000',99);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (15, 'Fred', 'Flintstone', 'Bedrock', '777-2345',11);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (13, 'Super', 'Man', 'Kypto', '888-1234',33);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (10, 'Barney', 'Rubble', 'Bedrock', '777-1234',11);
+INSERT INTO customer (custID, custfn, custln, custcity, custpn,custagentID) VALUES (14, 'Peter', 'Griffens', 'Providence', '987-4567',99);
+
+INSERT INTO purchases VALUES (21,99,20);
+INSERT INTO purchases VALUES (21,12,14);
+INSERT INTO purchases VALUES (21,66,10);
+INSERT INTO purchases VALUES (31,99,1);
+INSERT INTO purchases VALUES (31,12,2);
+INSERT INTO purchases VALUES (31,78,4);
+INSERT INTO purchases VALUES (31,66,2);
+INSERT INTO purchases VALUES (15,66,2);
+INSERT INTO purchases VALUES (15,78,2);
+INSERT INTO purchases VALUES (14,66,19);
+
+
+SELECT * FROM product;
+SELECT * FROM agent;
+SELECT * FROM customer;
+SELECT * FROM purchases;
+
+UPDATE customer SET custfn='Wonder',custln='Woman' WHERE custfn='Super' AND custln='Man';
+UPDATE purchases INNER JOIN customer ON purchases.purchcustID=customer.custID SET purchases.purchquant=5 WHERE customer.custfn='Sideshow';
+UPDATE customer INNER JOIN agent ON customer.custagentID=agent.agentID SET customer.custcity='Boston' WHERE agent.agentfn='Regis';
+
+SELECT * FROM customer;
+SELECT * FROM product;
+SELECT * FROM purchases;
+SELECT * FROM agent;

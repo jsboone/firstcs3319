@@ -1,0 +1,97 @@
+Warning: Using a password on the command line interface can be insecure.
+ERROR 1451 (23000) at line 22: Cannot delete or update a parent row: a foreign key constraint fails (`jboone6assign2db`.`customer`, CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`custagentID`) REFERENCES `agent` (`agentID`))
+--------------
+SELECT * FROM product
+--------------
+
+prodID	proddesc	prodcost	prodquant
+11	Bike	150	200
+12	Socks	2	100
+18	Bike Lock	20	200
+66	Elbow pads	14.25	120
+78	Knee Pads	12.15	70
+88	Roller Blades	75	89
+99	Helmet	29	30
+--------------
+SELECT * FROM customer
+--------------
+
+custID	custfn	custln	custcity	custpn	custagentID
+10	Barney	Rubble	Boston	777-1234	11
+12	Monty	Burns	Springfield	789-0000	99
+13	Wonder	Woman	Kypto	888-1234	33
+14	Peter	Griffens	Providence	987-4567	99
+15	Fred	Flintstone	Boston	777-2345	11
+21	Homer	Simpson	Springfield	686-8956	99
+31	Sideshow	Bob	Springfield	686-5555	66
+--------------
+SELECT * FROM agent
+--------------
+
+agentID	agentfn	agentln	agentcity	agentcomm
+11	Regis	Philbin	Boston	33
+12	Rosie	Cox	Ottawa	50
+22	Courtney	Cox	New York	25
+33	David	Letterman	Bedrock	100
+66	Rosie	ODonnell	Ottawa	100
+98	Jodi	Boone	Toronto	99
+99	Hugh	Grant	Springfield	16
+--------------
+SELECT * FROM purchases
+--------------
+
+purchcustID	purchprodID	purchquant
+14	66	19
+15	66	2
+15	78	2
+21	12	14
+21	66	10
+21	99	20
+31	12	5
+31	66	5
+31	78	5
+31	99	5
+--------------
+DROP VIEW IF EXISTS File4View
+--------------
+
+--------------
+CREATE VIEW File4View AS SELECT customer.custfn, customer.custln, GROUP_CONCAT(product.proddesc) AS 'All Products Bought', GROUP_CONCAT(purchases.purchquant) AS 'Total of Each Product Bought', GROUP_CONCAT(product.prodcost) AS 'Cost of Each Product Bought', SUM(product.prodcost*purchases.purchquant) AS 'Total_Cost' FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID INNER JOIN product ON product.prodID=purchases.purchprodID GROUP BY customer.custfn ORDER BY customer.custln
+--------------
+
+--------------
+SELECT * FROM File4View
+--------------
+
+custfn	custln	All Products Bought	Total of Each Product Bought	Cost of Each Product Bought	Total_Cost
+Sideshow	Bob	Socks,Elbow pads,Knee Pads,Helmet	5,5,5,5	2,14.25,12.15,29	286.99999809265137
+Fred	Flintstone	Elbow pads,Knee Pads	2,2	14.25,12.15	52.79999923706055
+Peter	Griffens	Elbow pads	19	14.25	270.75
+Homer	Simpson	Socks,Elbow pads,Helmet	14,10,20	2,14.25,29	750.5
+--------------
+SELECT * FROM File4View WHERE Total_Cost > 100
+--------------
+
+custfn	custln	All Products Bought	Total of Each Product Bought	Cost of Each Product Bought	Total_Cost
+Sideshow	Bob	Socks,Elbow pads,Knee Pads,Helmet	5,5,5,5	2,14.25,12.15,29	286.99999809265137
+Peter	Griffens	Elbow pads	19	14.25	270.75
+Homer	Simpson	Socks,Elbow pads,Helmet	14,10,20	2,14.25,29	750.5
+--------------
+DELETE FROM product WHERE proddesc='Bike Lock'
+--------------
+
+--------------
+SELECT * FROM product
+--------------
+
+prodID	proddesc	prodcost	prodquant
+11	Bike	150	200
+12	Socks	2	100
+66	Elbow pads	14.25	120
+78	Knee Pads	12.15	70
+88	Roller Blades	75	89
+99	Helmet	29	30
+--------------
+DELETE FROM agent WHERE agentcity='Springfield'
+--------------
+

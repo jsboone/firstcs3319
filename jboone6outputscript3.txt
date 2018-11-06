@@ -1,0 +1,133 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SELECT proddesc FROM product
+--------------
+
+proddesc
+Bike
+Socks
+Bike Lock
+Elbow pads
+Knee Pads
+Roller Blades
+Helmet
+--------------
+SELECT DISTINCT custcity FROM customer
+--------------
+
+custcity
+Boston
+Springfield
+Kypto
+Providence
+--------------
+SELECT * FROM agent ORDER BY agentcity
+--------------
+
+agentID	agentfn	agentln	agentcity	agentcomm
+33	David	Letterman	Bedrock	100
+11	Regis	Philbin	Boston	33
+22	Courtney	Cox	New York	25
+12	Rosie	Cox	Ottawa	50
+66	Rosie	ODonnell	Ottawa	100
+99	Hugh	Grant	Springfield	16
+98	Jodi	Boone	Toronto	99
+--------------
+SELECT custfn,custln FROM customer WHERE custcity='Springfield'
+--------------
+
+custfn	custln
+Monty	Burns
+Homer	Simpson
+Sideshow	Bob
+--------------
+SELECT custln FROM customer WHERE custagentID=11
+--------------
+
+custln
+Rubble
+Flintstone
+--------------
+SELECT * FROM product WHERE proddesc LIKE '%pad%' OR '%Pad%'
+--------------
+
+prodID	proddesc	prodcost	prodquant
+66	Elbow pads	14.25	120
+78	Knee Pads	12.15	70
+--------------
+SELECT customer.custln, product.proddesc, purchases.purchquant FROM customer INNER JOIN purchases ON customer.custID=purchases.purchcustID INNER JOIN product ON purchases.purchprodID=product.prodID
+--------------
+
+custln	proddesc	purchquant
+Griffens	Elbow pads	19
+Flintstone	Elbow pads	2
+Flintstone	Knee Pads	2
+Simpson	Socks	14
+Simpson	Elbow pads	10
+Simpson	Helmet	20
+Bob	Socks	5
+Bob	Elbow pads	5
+Bob	Knee Pads	5
+Bob	Helmet	5
+--------------
+SELECT SUM(purchquant) AS 'Homer\'s Total Purchases' FROM purchases INNER JOIN customer ON purchases.purchcustID=customer.custID WHERE customer.custfn='Homer'
+--------------
+
+Homer's Total Purchases
+44
+--------------
+SELECT customer.custfn, customer.custln, SUM(purchases.purchquant) FROM customer INNER JOIN purchases ON customer.custID=purchases.purchcustID GROUP BY customer.custfn
+--------------
+
+custfn	custln	SUM(purchases.purchquant)
+Fred	Flintstone	4
+Homer	Simpson	44
+Peter	Griffens	19
+Sideshow	Bob	20
+--------------
+SELECT proddesc, prodquant FROM product WHERE NOT EXISTS(SELECT * FROM purchases WHERE purchases.purchprodID=product.prodID)
+--------------
+
+proddesc	prodquant
+Bike	200
+Bike Lock	200
+Roller Blades	89
+--------------
+SELECT product.proddesc, product.prodquant FROM product WHERE product.prodID NOT IN(SELECT purchases.purchprodID FROM purchases INNER JOIN customer ON purchases.purchcustID=customer.custID WHERE customer.custfn='Fred' AND customer.custln='Flintstone')
+--------------
+
+proddesc	prodquant
+Bike	200
+Socks	100
+Bike Lock	200
+Roller Blades	89
+Helmet	30
+--------------
+SELECT custfn, custln, agentfn, agentln FROM customer INNER JOIN agent WHERE customer.custcity=agent.agentcity
+--------------
+
+custfn	custln	agentfn	agentln
+Barney	Rubble	Regis	Philbin
+Fred	Flintstone	Regis	Philbin
+Monty	Burns	Hugh	Grant
+Homer	Simpson	Hugh	Grant
+Sideshow	Bob	Hugh	Grant
+--------------
+SELECT SUM(purchases.purchquant) AS 'Number of Knee Pads Purchased' FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID WHERE purchases.purchprodID=78
+--------------
+
+Number of Knee Pads Purchased
+7
+--------------
+SELECT proddesc FROM product WHERE product.prodID IN(SELECT purchprodID FROM (SELECT purchprodID, count(*) as c from purchases GROUP BY purchprodID HAVING c>=3) AS x)
+--------------
+
+proddesc
+Elbow pads
+--------------
+SELECT agent.agentfn, agent.agentln FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID INNER JOIN agent on customer.custagentID=agent.agentID WHERE purchases.purchprodID=78
+--------------
+
+agentfn	agentln
+Regis	Philbin
+Rosie	ODonnell

@@ -1,0 +1,32 @@
+USE jboone6assign2db;
+
+-- QUERY 1
+SELECT proddesc FROM product;
+-- QUERY 2
+SELECT DISTINCT custcity FROM customer;
+-- QUERY 3
+SELECT * FROM agent ORDER BY agentcity;
+-- QUERY 4
+SELECT custfn,custln FROM customer WHERE custcity='Springfield';
+-- QUERY 5
+SELECT custln FROM customer WHERE custagentID=11;
+-- QUERY 6
+SELECT * FROM product WHERE proddesc LIKE '%pad%' OR '%Pad%';
+-- QUERY 7
+SELECT customer.custln, product.proddesc, purchases.purchquant FROM customer INNER JOIN purchases ON customer.custID=purchases.purchcustID INNER JOIN product ON purchases.purchprodID=product.prodID;
+-- QUERY 8
+SELECT SUM(purchquant) AS 'Homer\'s Total Purchases' FROM purchases INNER JOIN customer ON purchases.purchcustID=customer.custID WHERE customer.custfn='Homer';
+-- QUERY 9
+SELECT customer.custfn, customer.custln, SUM(purchases.purchquant) FROM customer INNER JOIN purchases ON customer.custID=purchases.purchcustID GROUP BY customer.custfn;
+-- QUERY 10
+SELECT proddesc, prodquant FROM product WHERE NOT EXISTS(SELECT * FROM purchases WHERE purchases.purchprodID=product.prodID);
+-- QUERY 11
+SELECT product.proddesc, product.prodquant FROM product WHERE product.prodID NOT IN(SELECT purchases.purchprodID FROM purchases INNER JOIN customer ON purchases.purchcustID=customer.custID WHERE customer.custfn='Fred' AND customer.custln='Flintstone');
+-- QUERY 12
+SELECT custfn, custln, agentfn, agentln FROM customer INNER JOIN agent WHERE customer.custcity=agent.agentcity;
+-- QUERY 13
+SELECT SUM(purchases.purchquant) AS 'Number of Knee Pads Purchased' FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID WHERE purchases.purchprodID=78; 
+-- QUERY 14
+SELECT proddesc FROM product WHERE product.prodID IN(SELECT purchprodID FROM (SELECT purchprodID, count(*) as c from purchases GROUP BY purchprodID HAVING c>=3) AS x);
+-- QUERY 15
+SELECT agent.agentfn, agent.agentln FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID INNER JOIN agent on customer.custagentID=agent.agentID WHERE purchases.purchprodID=78;

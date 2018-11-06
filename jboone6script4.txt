@@ -1,0 +1,23 @@
+USE jboone6assign2db;
+
+SELECT * FROM product;
+SELECT * FROM customer;
+SELECT * FROM agent;
+SELECT * FROM purchases;
+
+-- Delete View if Exists
+DROP VIEW IF EXISTS File4View;
+
+-- CREATE VIEW 'File4View' AS
+
+CREATE VIEW File4View AS SELECT customer.custfn, customer.custln, GROUP_CONCAT(product.proddesc) AS 'All Products Bought', GROUP_CONCAT(purchases.purchquant) AS 'Total of Each Product Bought', GROUP_CONCAT(product.prodcost) AS 'Cost of Each Product Bought', SUM(product.prodcost*purchases.purchquant) AS 'Total_Cost' FROM purchases INNER JOIN customer ON customer.custID=purchases.purchcustID INNER JOIN product ON product.prodID=purchases.purchprodID GROUP BY customer.custfn ORDER BY customer.custln;
+
+SELECT * FROM File4View;
+SELECT * FROM File4View WHERE Total_Cost > 100;
+
+-- Delete product I created:
+DELETE FROM product WHERE proddesc='Bike Lock';
+-- Prove that product is now deleted, this is done by showing updated table
+SELECT * FROM product;
+DELETE FROM agent WHERE agentcity='Springfield';
+-- This row from agent could not be deleted as there is a foreign key constraint limiting this behaviour. This data is referenced in the customer table through the foreign key custagentID and the data can not be deleted solely in the agent table because it would create holes in the foreign key reference which was estabolished when the tables were created.
